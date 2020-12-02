@@ -9,10 +9,11 @@ defaul_app = firebase_admin.initialize_app(cred,{
 })
 ref = db.reference('/road')
 
+app = Flask(__name__)
+
 @app.route('/')
 def home():
     return 'Hello, World!'
-
 
 
 if __name__ == '__main__':
