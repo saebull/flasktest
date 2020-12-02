@@ -1,20 +1,31 @@
-from flask import Flask
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import db
+import pyrebase
+from flask import *
 
-cred = credentials.Certificate('ongkey.json')
-defaul_app = firebase_admin.initialize_app(cred,{
-    'databaseURL' : 'https://ie-project-292614.firebaseio.com/'
-})
-ref = db.reference('/road')
+config = {
+    "apiKey": "AIzaSyAsDlGTnwNoRgAdcoMV41x_xxxxx",
+    "authDomain": "pythontest-xxxx.firebaseapp.com",
+    "databaseURL": "https://pythontest-xxxx.firebaseio.com",
+    "projectId": "pythontest-xxxx",
+    "storageBucket": "",
+    "messagingSenderId": "68980739xxxx",
+    "appId": "1:689807391396:web:cedfcfbb5xxxxx"
+}
+
+firebase = pyrebase.initialize_app(config)
+
+db = firebase.database()
 
 app = Flask(__name__)
 
-@app.route('/')
-def home():
-    return 'Hello, World!'
-
+@app.route('/', methods=['POST', 'GET'])
+def main():
+    if request.method == 'POST':
+        name = request.form['name']
+        db.child('todo').push(name)
+        todo = db.child('todo').get()
+        todo_list = todo.val()
+        return render_template('index.html', todo=todo_list)
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
